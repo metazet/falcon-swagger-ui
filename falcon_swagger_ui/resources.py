@@ -50,14 +50,15 @@ class StaticSinkAdapter(object):
 
 class SwaggerUiResource(object):
     templates_folder = 'templates'
+    template_name = 'index.html'
 
-    def __init__(self, default_context):
+    def __init__(self, context):
         self.templates = TemplateRenderer(self.templates_folder)
-        self.context = default_context
+        self.context = context
 
     def on_get(self, req, resp):
         resp.content_type = 'text/html'
-        resp.body = self.templates.render('index.html', **self.context)
+        resp.body = self.templates.render(self.template_name, **self.context)
 
 
 def register_swaggerui_app(app, swagger_uri, api_url, page_title='Swagger UI',
