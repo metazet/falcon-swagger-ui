@@ -49,9 +49,10 @@ class StaticSinkAdapter(object):
 
 
 class SwaggerUiResource(object):
+    templates_folder = 'templates'
 
-    def __init__(self, templates_folder, default_context):
-        self.templates = TemplateRenderer(templates_folder)
+    def __init__(self, default_context):
+        self.templates = TemplateRenderer(self.templates_folder)
         self.context = default_context
 
     def on_get(self, req, resp):
@@ -59,11 +60,12 @@ class SwaggerUiResource(object):
         resp.body = self.templates.render('index.html', **self.context)
 
 
-def register_swaggerui_app(app, swagger_uri, api_url, page_title='Swagger UI', favicon_url=None, config=None, uri_prefix=""):
+def register_swaggerui_app(app, swagger_uri, api_url, page_title='Swagger UI',
+                           favicon_url=None, config=None, uri_prefix="",
+                           resource_cls=SwaggerUiResource):
 
     """:type app: falcon.API"""
 
-    templates_folder = 'templates'
     static_folder = 'dist'
 
     default_config = {
@@ -102,5 +104,5 @@ def register_swaggerui_app(app, swagger_uri, api_url, page_title='Swagger UI', f
 
     app.add_route(
         swagger_uri,
-        SwaggerUiResource(templates_folder, default_context)
+        resource_cls(default_context)
     )
